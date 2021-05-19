@@ -33,9 +33,9 @@ function setup() {
 
     sel = createSelect();
     sel.position(size + 190, 230);
-    sel.option("None")
     sel.option("Quaterwave")
     sel.changed(updatesel)
+    updatesel()
 }
 
 function update() {
