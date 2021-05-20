@@ -1,81 +1,130 @@
-let chart
-let movetrail
-let qw
-size = 700
-buffer = size * 55 / 700
-s = size - 2 * buffer
-px = 0.0
-py = 0.0
-runquaterwave = false
-
+//version 0.0.1
+//author G.Mohan teja
+//status : under devlopment
+//dependencies : p5js
+//code starts
+//declaring gloabal variables//
+//global variable to hold the chart image
+let chart;
+//global variable to hold the the 2nd canvas
+let movetrail;
+//varibale to hold quaterwave image
+let qw;
+//determining the the size of the image
+size = 700;
+//the buffer to work on actual required area on image
+buffer = size * 55 / 700;
+//size of the working area
+s = size - 2 * buffer;
+//values to store zn values globally
+px = 0.0;
+py = 0.0;
+//boolean varibles to hold the initail conditions of the button
+runquaterwave = false;
+//setting up initial values
 function setup() {
+    //creating a canvas at windowwidth and window height
     cnv = createCanvas(windowWidth, windowHeight);
+    //set the canvas position as 0,0 so that there are no margins on html or css affecting this
     cnv.position(0, 0, 'fixed');
-    //cnv.style('cursor', 'none')
-    chart = loadImage('chart.svg')
-    qw = loadImage('quaterwave.png')
-    real_input = createInput("10")
-    real_input.position(size + 30, 200)
-    real_input.size(35)
-    real_input.changed(update)
-    img_input = createInput("30")
-    img_input.position(size + 90, 200)
-    img_input.size(35)
-    img_input.changed(update)
-
-    zo = createInput("50.0")
-    zo.position(size + 90, 230)
-    zo.size(35)
-    zo.changed(update)
-    update()
-    movetrail = createGraphics(windowWidth, windowHeight)
-    movetrail.clear()
-
+    //cnv.style('cursor', 'none')//uncomment if u dont want a cursor to be displayed
+    //loading images
+    chart = loadImage('chart.svg');
+    qw = loadImage('quaterwave.png');
+    //creating inputs
+    //real value input with default value of 10
+    real_input = createInput("10");
+    //at positin of image size +30 and 200 px
+    real_input.position(size + 30, 200);
+    //set the size to 35
+    real_input.size(35);
+    //if the input values are changed call a function called update
+    real_input.changed(update);
+    //imaginary value input with a default of 30
+    img_input = createInput("30");
+    //at position size+90 and 200
+    img_input.position(size + 90, 200);
+    //at size 35
+    img_input.size(35);
+    //call the function update on values change
+    img_input.changed(update);
+    //create another input to hold zo value with 50
+    zo = createInput("50.0");
+    //at position sixe +90 and 230
+    zo.position(size + 90, 230);
+    //at size 35
+    zo.size(35);
+    //when changed call the function update
+    zo.changed(update);
+    //call the function update to apply initial values
+    update();
+    //create a new graphics canvas to draw trials upon
+    movetrail = createGraphics(windowWidth, windowHeight);
+    //make it transparent
+    movetrail.clear();
+    //create a drop down menu
     sel = createSelect();
+    //at this position
     sel.position(size + 190, 230);
-    sel.option("Quaterwave")
-    sel.changed(updatesel)
-    updatesel()
+    //with this option name
+    sel.option("Quaterwave");
+    //and when changed the function to call
+    sel.changed(updatesel);
+    //call the function to apply initial values given
+    updatesel();
 }
-
+//update function called when ever a input value is changed 
 function update() {
+    //update the global zn values px and py from input values
+    //note the input here is in form of string so we have to conver it to a float 
+    //by using parse float
     px = parseFloat(real_input.value()) / parseFloat(zo.value())
     py = parseFloat(img_input.value()) / parseFloat(zo.value())
-    console.log(px, py)
 }
-
+//function is runned when the selection is updated
 function updatesel() {
+    //if the selection is quaterwave then set bool run the quater wave to true
     if (sel.value() == "Quaterwave") {
         runquaterwave = true
     }
 }
-
+//this is where the actual front end happens
 function draw() {
+    //drawing the background as rgb 255,255,255 ie white
     background(255, 255, 255);
+    //drawing the image on top of background
     image(chart, 0, 0, size, size);
+    //set the stroke weight to 1
     strokeWeight(1);
+    //text size to 20
     textSize(20);
+    //set the fill color to black
     fill(0, 0, 0);
+    //adding texts
     text("Zl -", size + 1, 220)
     text("Zo -", size + 55, 245)
     text("i", size + 140, 220)
     text("+", size + 75, 220)
     text("Zn - " + c_r(mouseX, mouseY, 1).toString() + " + (" + c_i(mouseX, mouseY, 1).toString() + ") i \n(from mouse location)", size + 10, 100)
+        //if quater wave is selected run the quaterwave function
     if (runquaterwave) {
         quaterwave()
     }
 }
-
+// if the window is resized resize the canvas as well
 // function windowResized() {
 //     resizeCanvas(windowWidth, windowHeight);
 //     movetrail.resize(windowWidth, windowHeight)
 // }
+
+//function to find length of a vector
 function mod(arr) {
     return Math.sqrt(arr[0] ** 2 + arr[1] ** 2)
 }
 
-function dot(arr1, arr2) {
-    return arr1[0] * arr2[0] + arr1[1] * arr2[1]
+//funtion to find normalized dot of 2 vectors
+function dotn(arr1, arr2) {
+    return ((arr1[0] * arr2[0] + arr1[1] * arr2[1]) / (mod(arr1) * mod(arr2)))
 }
 
 function quaterwave() {
@@ -88,7 +137,7 @@ function quaterwave() {
     pppp = [0, 0]
     pppp[0] = t(s) - t(s / 2)
     pppp[1] = 0
-    length = Math.acos(dot(abcd, pppp) / (mod(abcd) * mod(pppp))) / (2 * Math.PI)
+    length = Math.acos(dot(abcd, pppp)) / (2 * Math.PI)
     noFill()
     strokeWeight(2)
     real(px)
