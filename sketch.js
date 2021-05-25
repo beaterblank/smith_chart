@@ -137,7 +137,7 @@ function quaterwave() {
     pppp = [0, 0]
     pppp[0] = t(s) - t(s / 2)
     pppp[1] = 0
-    length = Math.acos(dot(abcd, pppp)) / (2 * Math.PI)
+    length = Math.acos(dotn(abcd, pppp)) / (2 * Math.PI)
     noFill()
     strokeWeight(2)
     real(px)
